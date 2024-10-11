@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "pkg/grpc";
+
+package myapp;
+
+service PsqlService {
+  rpc SelectData (SelectDataRequest) returns (SelectDataResponse);
+}
+
+message SelectDataRequest {
+  int32 id = 1;
+}
+
+message SelectDataResponse {
+  string name = 1;
+  int32 age = 2;
+}

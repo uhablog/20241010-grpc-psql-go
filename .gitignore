@@ -23,3 +23,7 @@ go.work.sum
 
 # env file
 .env
+
+postgre-variables.env
+
+ts-express-grpc-client/node_modules
