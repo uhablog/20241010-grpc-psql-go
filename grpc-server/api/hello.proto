@@ -6,6 +6,7 @@ package myapp;
 
 service PsqlService {
   rpc SelectData (SelectDataRequest) returns (SelectDataResponse);
+  rpc InsertData (InsertDataRequest) returns (InsertDataResponse);
 }
 
 message SelectDataRequest {
@@ -15,4 +16,14 @@ message SelectDataRequest {
 message SelectDataResponse {
   string name = 1;
   int32 age = 2;
+}
+
+message InsertDataRequest {
+  string name = 1;
+  int32 age = 2;
+}
+
+message InsertDataResponse {
+  string message = 1;
+  bool success = 2;
 }

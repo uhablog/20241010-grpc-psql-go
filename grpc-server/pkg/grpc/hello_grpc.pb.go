@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	PsqlService_SelectData_FullMethodName = "/myapp.PsqlService/SelectData"
+	PsqlService_InsertData_FullMethodName = "/myapp.PsqlService/InsertData"
 )
 
 // PsqlServiceClient is the client API for PsqlService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PsqlServiceClient interface {
 	SelectData(ctx context.Context, in *SelectDataRequest, opts ...grpc.CallOption) (*SelectDataResponse, error)
+	InsertData(ctx context.Context, in *InsertDataRequest, opts ...grpc.CallOption) (*InsertDataResponse, error)
 }
 
 type psqlServiceClient struct {
@@ -47,11 +49,22 @@ func (c *psqlServiceClient) SelectData(ctx context.Context, in *SelectDataReques
 	return out, nil
 }
 
+func (c *psqlServiceClient) InsertData(ctx context.Context, in *InsertDataRequest, opts ...grpc.CallOption) (*InsertDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(InsertDataResponse)
+	err := c.cc.Invoke(ctx, PsqlService_InsertData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PsqlServiceServer is the server API for PsqlService service.
 // All implementations must embed UnimplementedPsqlServiceServer
 // for forward compatibility.
 type PsqlServiceServer interface {
 	SelectData(context.Context, *SelectDataRequest) (*SelectDataResponse, error)
+	InsertData(context.Context, *InsertDataRequest) (*InsertDataResponse, error)
 	mustEmbedUnimplementedPsqlServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedPsqlServiceServer struct{}
 
 func (UnimplementedPsqlServiceServer) SelectData(context.Context, *SelectDataRequest) (*SelectDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SelectData not implemented")
+}
+func (UnimplementedPsqlServiceServer) InsertData(context.Context, *InsertDataRequest) (*InsertDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertData not implemented")
 }
 func (UnimplementedPsqlServiceServer) mustEmbedUnimplementedPsqlServiceServer() {}
 func (UnimplementedPsqlServiceServer) testEmbeddedByValue()                     {}
@@ -104,6 +120,24 @@ func _PsqlService_SelectData_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PsqlService_InsertData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PsqlServiceServer).InsertData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PsqlService_InsertData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PsqlServiceServer).InsertData(ctx, req.(*InsertDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PsqlService_ServiceDesc is the grpc.ServiceDesc for PsqlService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var PsqlService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SelectData",
 			Handler:    _PsqlService_SelectData_Handler,
+		},
+		{
+			MethodName: "InsertData",
+			Handler:    _PsqlService_InsertData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
